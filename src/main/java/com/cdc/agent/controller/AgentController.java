@@ -1,10 +1,7 @@
 package com.cdc.agent.controller;
 
 import com.cdc.agent.agent.Assistant;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/mph/agent")
@@ -22,15 +19,15 @@ public class AgentController {
      * @param 测试agent chat功能
      * @return message
      * @test
-     * curl -X POST http://localhost:8888/mph/agent/chat \
+     * curl -X POST http://localhost:8888/mph/agent/chat?userId=user001
           -H "Content-Type: application/json" \
            -d '{
-               "message":"北京仓库在哪里？天气怎么样？"
+               "message":"My name is User001."
              }'
      */
     @PostMapping("/chat")
-    public String chat(@RequestBody String message){
-        return assistant.chat(message);
+    public String chat(@RequestParam String userId , @RequestBody String message){
+        return assistant.chat(userId,message);
     }
 
 }

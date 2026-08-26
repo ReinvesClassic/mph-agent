@@ -3,4 +3,17 @@ server:
 ai:
   gemini:
     api-key: ${AI_GEMINI_API_KEY:your-api-key-here}
+spring:
+  datasource:
+    url: jdbc:mysql://101.34.76.83:4306/agent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: agent
+    password: ${DB_PASSWORD:Admin@123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
