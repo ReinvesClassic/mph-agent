@@ -1,0 +1,6 @@
+server:
+  port: 8888
+ai:
+  gemini:
+    api-key: ${AI_GEMINI_API_KEY:your-api-key-here}
+
