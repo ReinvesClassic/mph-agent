@@ -17,3 +17,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  data:
+    redis:
+      host: 101.34.76.83
+      port: 6479
+      password: ${REDIS_PASSWORD:REdis@12138}
+      #mph app used db0
+      database: 1
