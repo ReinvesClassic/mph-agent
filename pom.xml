@@ -66,6 +66,16 @@
         </dependency>
 
         <!-- ====================== -->
+        <!-- Ollama模型（OpenAI兼容格式） -->
+        <!-- 本地部署的开源模型 -->
+        <!-- ====================== -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <!-- ====================== -->
         <!-- Lombok(可选) -->
         <!-- 简化代码 -->
         <!-- ====================== -->

@@ -6,7 +6,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_message", indexes = {@Index(name = "idx_memory_id", columnList = "memory_id")})
+@Table(name = "chat_message", indexes = {
+        @Index(name = "idx_memory_id", columnList = "memory_id"),
+        @Index(name = "idx_conversation_id", columnList = "conversation_id")
+})
 @Data
 public class ChatMessageEntity {
 
@@ -16,10 +19,16 @@ public class ChatMessageEntity {
 
 
     /**
-     * 会话ID
+     * 会话ID（LangChain4j 记忆存储键）
      */
     @Column(name = "memory_id", nullable = false)
     private String memoryId;
+
+    /**
+     * 会话ID（明确关联 conversation 表）
+     */
+    @Column(name = "conversation_id", nullable = false, length = 64)
+    private String conversationId;
 
 
     /**

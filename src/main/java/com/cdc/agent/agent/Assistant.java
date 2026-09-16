@@ -1,9 +1,10 @@
 package com.cdc.agent.agent;
 
-import dev.langchain4j.service.MemoryId;
-import dev.langchain4j.service.UserMessage;
-
+/**
+ * AI 助手接口（保留作为扩展点）
+ * 当前业务 API 已改用 ChatService 直接调用 ChatModel，
+ * 以支持动态 System Prompt 配置
+ */
 public interface Assistant {
-    String chat(@MemoryId String conversationId, @UserMessage String message);
 }
 

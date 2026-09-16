@@ -1,26 +1,36 @@
 package com.cdc.agent.controller;
 
-import com.cdc.agent.agent.Assistant;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cdc.agent.dto.ApiResponse;
 import com.cdc.agent.dto.ChatRequest;
 import com.cdc.agent.dto.ChatResponse;
 import com.cdc.agent.dto.CreateConversationRequest;
 import com.cdc.agent.entity.ConversationEntity;
 import com.cdc.agent.exception.AgentException;
+import com.cdc.agent.service.ChatService;
 import com.cdc.agent.service.ConversationService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/mph/agent")
 public class AgentController {
 
-    private final Assistant assistant;
+    private final ChatService chatService;
     private final ConversationService conversationService;
 
-    public AgentController(Assistant assistant, ConversationService conversationService) {
-        this.assistant = assistant;
+    @Value("${ai.system-prompt}")
+    private String systemPrompt;
+
+    public AgentController(ChatService chatService, ConversationService conversationService) {
+        this.chatService = chatService;
         this.conversationService = conversationService;
     }
 
@@ -40,13 +50,17 @@ public class AgentController {
         if (request.getMessage() == null || request.getMessage().isBlank()) {
             throw AgentException.paramError("message 不能为空");
         }
+        System.out.println("-------------");
 
         // 获取有效会话（未提供或已过期则自动创建新会话）
         String conversationId = conversationService.getOrCreateActiveConversation(
                 request.getUserId(), request.getConversationId());
 
-        // 调用 AI
-        String reply = assistant.chat(conversationId, request.getMessage());
+        // 调用 AI（动态 System Prompt + 工具调用 + 记忆管理）
+        String reply = chatService.chat(conversationId, systemPrompt, request.getMessage());
+
+        // 首次对话后自动生成会话标题（异步执行，失败不影响聊天响应）
+        conversationService.generateAndSetTitle(conversationId);
 
         return ApiResponse.ok(new ChatResponse(conversationId, reply));
     }

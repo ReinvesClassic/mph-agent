@@ -176,6 +176,7 @@ public class JpaChatMemoryStore implements ChatMemoryStore {
     private ChatMessageEntity convertToEntity(String memoryId, ChatMessage message) {
         ChatMessageEntity entity = new ChatMessageEntity();
         entity.setMemoryId(memoryId);
+        entity.setConversationId(memoryId);
         entity.setCreateTime(LocalDateTime.now());
         entity.setUpdateTime(LocalDateTime.now());
 
