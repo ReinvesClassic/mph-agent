@@ -10,15 +10,15 @@ ai:
     api-key: ${AI_GEMINI_API_KEY:your-api-key-here}
     model-name: gemini-3.5-flash
   ollama:
-    base-url: ${OLLAMA_BASE_URL:http://192.168.1.8:11434/v1}
+    base-url: ${OLLAMA_BASE_URL:http://192.168.1.12:11434/v1}
     model-name: ${OLLAMA_MODEL_NAME:qwen3:8b}
     api-key: ${OLLAMA_API_KEY:ollama}
     timeout: 60
 spring:
   datasource:
-    url: jdbc:mysql://101.34.76.83:4306/agent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://43.143.229.212:3306/agent?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: agent
-    password: ${DB_PASSWORD:Admin@123}
+    password: ${DB_PASSWORD:agent@123321}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -31,8 +31,29 @@ spring:
 
   data:
     redis:
-      host: 101.34.76.83
-      port: 6479
-      password: ${REDIS_PASSWORD:REdis@12138}
+      host: 43.143.229.212
+      port: 6379
+      password: ${REDIS_PASSWORD:Redis@123321}
       #mph app used db0
       database: 1
+
+# RAG 知识库配置
+rag:
+  # 知识库文档目录（启动时自动加载）
+  knowledge-base-dir: ${RAG_KNOWLEDGE_DIR:./knowledge-base}
+  # 检索返回的最大文档片段数
+  max-results: ${RAG_MAX_RESULTS:3}
+  # 最低相似度阈值（0-1），低于此值的片段不返回
+  min-score: ${RAG_MIN_SCORE:0.7}
+  # 文档切分：每个片段的最大 token 数
+  chunk-size: ${RAG_CHUNK_SIZE:300}
+  # 文档切分：相邻片段的重叠 token 数
+  chunk-overlap: ${RAG_CHUNK_OVERLAP:50}
+
+# Milvus 向量数据库配置
+milvus:
+  host: ${MILVUS_HOST:localhost}
+  port: ${MILVUS_PORT:19530}
+  collection-name: ${MILVUS_COLLECTION:mph_knowledge}
+  # 向量维度，需与 Embedding 模型输出维度一致（AllMiniLmL6V2 = 384）
+  dimension: ${MILVUS_DIMENSION:384}

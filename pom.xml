@@ -11,6 +11,8 @@
     <properties>
         <java.version>17</java.version>
         <langchain4j.version>1.2.0</langchain4j.version>
+        <langchain4j.embeddings.version>1.2.0-beta8</langchain4j.embeddings.version>
+        <langchain4j.milvus.version>1.2.0-beta8</langchain4j.milvus.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -103,6 +105,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <!-- ====================== -->
+        <!-- RAG: 本地 Embedding 模型 + Milvus 向量库 -->
+        <!-- AllMiniLmL6V2 本地嵌入模型（~80MB，首次自动下载） -->
+        <!-- Milvus 持久化向量存储 -->
+        <!-- ====================== -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-all-minilm-l6-v2-q</artifactId>
+            <version>${langchain4j.embeddings.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-milvus</artifactId>
+            <version>${langchain4j.milvus.version}</version>
+        </dependency>
+
         <!-- ====================== -->
         <!-- 测试 -->
         <!-- ====================== -->

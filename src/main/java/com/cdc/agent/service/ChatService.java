@@ -1,6 +1,7 @@
 package com.cdc.agent.service;
 
 import com.cdc.agent.store.JpaChatMemoryStore;
+import com.cdc.agent.service.rag.DocumentService;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
@@ -34,16 +35,19 @@ public class ChatService {
 
     private final ChatModel chatModel;
     private final JpaChatMemoryStore memoryStore;
+    private final DocumentService documentService;
     private final List<Object> toolObjects;
     private final List<ToolSpecification> toolSpecs;
 
     public ChatService(ChatModel chatModel,
                        JpaChatMemoryStore memoryStore,
+                       DocumentService documentService,
                        com.cdc.agent.tool.CalculatorTool calculatorTool,
                        com.cdc.agent.tool.WeatherTool weatherTool,
                        com.cdc.agent.tool.WarehouseTool warehouseTool) {
         this.chatModel = chatModel;
         this.memoryStore = memoryStore;
+        this.documentService = documentService;
         this.toolObjects = List.of(calculatorTool, weatherTool, warehouseTool);
         this.toolSpecs = new ArrayList<>();
         for (Object tool : this.toolObjects) {
@@ -73,9 +77,18 @@ public class ChatService {
             log.info("  - {}: {}", msg.type(), msg instanceof AiMessage ? ((AiMessage) msg).text() : "...");
         }
 
+        // RAG: 从知识库检索相关上下文
+        List<String> ragContext = documentService.retrieveRelevantContext(userMessage);
+        String effectivePrompt = systemPrompt;
+        if (!ragContext.isEmpty()) {
+            String contextBlock = String.join("\n---\n", ragContext);
+            effectivePrompt = systemPrompt + "\n\n以下是从知识库中检索到的相关信息，请优先基于这些信息回答用户问题：\n" + contextBlock;
+            log.info("[RAG] 注入 {} 个知识库片段到系统提示", ragContext.size());
+        }
+
         // 构建消息：系统提示 + 历史记忆 + 当前用户消息
         List<ChatMessage> messages = new ArrayList<>();
-        messages.add(SystemMessage.from(systemPrompt));
+        messages.add(SystemMessage.from(effectivePrompt));
         messages.addAll(history);
         messages.add(UserMessage.from(userMessage));
 
