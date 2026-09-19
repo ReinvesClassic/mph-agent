@@ -57,3 +57,18 @@ milvus:
   collection-name: ${MILVUS_COLLECTION:mph_knowledge}
   # 向量维度，需与 Embedding 模型输出维度一致（AllMiniLmL6V2 = 384）
   dimension: ${MILVUS_DIMENSION:384}
+
+# API 认证配置（国密 SM3 签名验证）
+auth:
+  # 是否启用 API 认证
+  enabled: ${AUTH_ENABLED:true}
+  # 签名时间戳容忍窗口（秒），超过此时间的请求将被拒绝
+  timestamp-tolerance: ${AUTH_TIMESTAMP_TOLERANCE:300}
+  # 默认客户端（启动时自动初始化，首次部署后请修改密钥）
+  default-client:
+    app-id: ${AUTH_DEFAULT_APP_ID:default}
+    app-secret: ${AUTH_DEFAULT_APP_SECRET:default-secret-change-me}
+    app-name: 默认客户端
+  # 认证白名单路径（不需要认证的接口）
+  exclude-paths:
+    - /mph/agent/auth/**

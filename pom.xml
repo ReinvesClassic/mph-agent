@@ -13,6 +13,8 @@
         <langchain4j.version>1.2.0</langchain4j.version>
         <langchain4j.embeddings.version>1.2.0-beta8</langchain4j.embeddings.version>
         <langchain4j.milvus.version>1.2.0-beta8</langchain4j.milvus.version>
+        <hutool.version>5.8.26</hutool.version>
+        <bouncycastle.version>1.78.1</bouncycastle.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -119,6 +121,22 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-milvus</artifactId>
             <version>${langchain4j.milvus.version}</version>
+        </dependency>
+
+        <!-- ====================== -->
+        <!-- 国密 SM2/SM3/SM4 -->
+        <!-- Hutool-crypto 国密算法封装 -->
+        <!-- Bouncy Castle 密码学提供者 -->
+        <!-- ====================== -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
         </dependency>
 
         <!-- ====================== -->
