@@ -239,6 +239,13 @@ public class ApiTestClient {
             System.out.println("响应: " + statusResult);
             System.out.println();
 
+            // ---------- 测试 5.5: 目录摄入（首次初始化知识库） ----------
+            System.out.println("【测试 5.5】目录摄入知识库（SM3 签名认证）");
+            System.out.println("----------------------------------------");
+            String ingestResult = post("/mph/agent/knowledge/ingest-dir?path=./knowledge-base", "");
+            System.out.println("响应: " + ingestResult);
+            System.out.println();
+
             // ---------- 测试 6: 知识库检索（需 SM3 签名） ----------
             System.out.println("【测试 6】知识库检索（SM3 签名认证）");
             System.out.println("----------------------------------------");

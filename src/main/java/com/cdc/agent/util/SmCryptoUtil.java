@@ -3,6 +3,7 @@ package com.cdc.agent.util;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,13 @@ import cn.hutool.crypto.symmetric.SM4;
 public class SmCryptoUtil {
 
     private static final Logger log = LoggerFactory.getLogger(SmCryptoUtil.class);
+
+    // 注册 Bouncy Castle 安全提供者（SM2/SM3/SM4 依赖）
+    static {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
 
     private SmCryptoUtil() {
     }

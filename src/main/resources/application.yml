@@ -10,7 +10,7 @@ ai:
     api-key: ${AI_GEMINI_API_KEY:your-api-key-here}
     model-name: gemini-3.5-flash
   ollama:
-    base-url: ${OLLAMA_BASE_URL:http://192.168.1.12:11434/v1}
+    base-url: ${OLLAMA_BASE_URL:http://192.168.1.4:11434/v1}
     model-name: ${OLLAMA_MODEL_NAME:qwen3:8b}
     api-key: ${OLLAMA_API_KEY:ollama}
     timeout: 60
@@ -44,7 +44,7 @@ rag:
   # 检索返回的最大文档片段数
   max-results: ${RAG_MAX_RESULTS:3}
   # 最低相似度阈值（0-1），低于此值的片段不返回
-  min-score: ${RAG_MIN_SCORE:0.7}
+  min-score: ${RAG_MIN_SCORE:0.3}
   # 文档切分：每个片段的最大 token 数
   chunk-size: ${RAG_CHUNK_SIZE:300}
   # 文档切分：相邻片段的重叠 token 数

@@ -118,9 +118,17 @@ public class AuthFilter implements Filter {
         CachedBodyRequestWrapper wrappedRequest = new CachedBodyRequestWrapper(httpRequest);
         String body = wrappedRequest.getCachedBody();
 
-        // 构建签名原文: method + path + timestamp + body
+        // 构建签名原文: method + fullPath + timestamp + body
+        // fullPath 包含 query string，与客户端签名保持一致
+        // 注意：getQueryString() 返回 URL 编码后的内容，需要解码以匹配客户端原始签名
         String method = httpRequest.getMethod();
-        String signData = method + path + timestamp + body;
+        String fullPath = path;
+        if (httpRequest.getQueryString() != null) {
+            String decodedQuery = java.net.URLDecoder.decode(
+                    httpRequest.getQueryString(), java.nio.charset.StandardCharsets.UTF_8);
+            fullPath += "?" + decodedQuery;
+        }
+        String signData = method + fullPath + timestamp + body;
 
         // SM3 签名验证
         if (!appClientService.verifySign(signData, client.getAppSecret(), sign)) {

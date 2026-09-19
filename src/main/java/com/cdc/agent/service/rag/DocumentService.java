@@ -60,6 +60,13 @@ public class DocumentService {
     }
 
     /**
+     * 获取向量存储实例（用于管理接口）
+     */
+    public EmbeddingStore<TextSegment> getEmbeddingStore() {
+        return embeddingStore;
+    }
+
+    /**
      * 摄入单个上传文件
      * 将文件保存到知识库目录，然后加载、切分、向量化并存入向量库
      */

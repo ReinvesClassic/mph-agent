@@ -3,8 +3,12 @@ package com.cdc.agent.controller;
 import com.cdc.agent.dto.ApiResponse;
 import com.cdc.agent.exception.AgentException;
 import com.cdc.agent.service.rag.DocumentService;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +25,8 @@ import java.util.Map;
 @RequestMapping("/mph/agent/knowledge")
 @Tag(name = "知识库管理", description = "文档上传、摄入、检索接口（需 SM3 签名认证）")
 public class DocumentController {
+
+    private static final Logger log = LoggerFactory.getLogger(DocumentController.class);
 
     private final DocumentService documentService;
 
@@ -75,6 +81,24 @@ public class DocumentController {
         status.put("storageType", "milvus");
         status.put("status", "connected");
         return ApiResponse.ok(status);
+    }
+
+    /**
+     * 清除知识库并重新摄入
+     *
+     * @test curl -X POST "http://localhost:8888/mph/agent/knowledge/reset"
+     */
+    @PostMapping("/reset")
+    @Operation(summary = "重置知识库", description = "清除所有已摄入的向量数据并从目录重新摄入")
+    public ApiResponse<String> resetKnowledgeBase(@RequestParam(required = false, defaultValue = "./knowledge-base") String path) {
+        embeddingStore().removeAll();
+        log.info("[RAG] 已清除所有向量数据");
+        int count = documentService.ingestDirectory(path);
+        return ApiResponse.ok("知识库已重置，从目录摄入 " + count + " 个文档");
+    }
+
+    private EmbeddingStore<TextSegment> embeddingStore() {
+        return documentService.getEmbeddingStore();
     }
 
     /**
