@@ -2,6 +2,8 @@ package com.cdc.agent.controller;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,7 @@ import com.cdc.agent.service.ConversationService;
 
 @RestController
 @RequestMapping("/mph/agent")
+@Tag(name = "AI 对话", description = "智能对话、会话管理接口（需 SM3 签名认证）")
 public class AgentController {
 
     private final ChatService chatService;
@@ -42,6 +45,7 @@ public class AgentController {
      *       -d '{"userId":"user001","conversationId":"","message":"你好"}'
      */
     @PostMapping("/chat")
+    @Operation(summary = "发送聊天消息", description = "与 AI 智能助手对话，支持多轮记忆和工具调用")
     public ApiResponse<ChatResponse> chat(@RequestBody ChatRequest request) {
         // 参数校验
         if (request.getUserId() == null || request.getUserId().isBlank()) {
@@ -73,6 +77,7 @@ public class AgentController {
      *       -d '{"userId":"user001"}'
      */
     @PostMapping("/conversation")
+    @Operation(summary = "创建新会话", description = "为指定用户创建一个新的对话会话")
     public ApiResponse<String> createConversation(@RequestBody CreateConversationRequest request) {
         if (request.getUserId() == null || request.getUserId().isBlank()) {
             throw AgentException.paramError("userId 不能为空");
@@ -87,6 +92,7 @@ public class AgentController {
      * @test curl http://localhost:8888/mph/agent/conversations?userId=user001
      */
     @GetMapping("/conversations")
+    @Operation(summary = "查询会话列表", description = "获取指定用户的所有对话会话")
     public ApiResponse<List<ConversationEntity>> listConversations(@RequestParam String userId) {
         if (userId == null || userId.isBlank()) {
             throw AgentException.paramError("userId 不能为空");
