@@ -2,7 +2,6 @@ package com.cdc.agent.service.rag;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
-import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -79,8 +78,8 @@ public class DocumentService {
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         log.info("[RAG] 文件已保存: {}", targetPath);
 
-        // 加载并摄入
-        Document document = FileSystemDocumentLoader.loadDocument(targetPath);
+        // 加载并摄入（使用 Apache Tika 解析，支持 PDF/Word/Excel 等多格式）
+        Document document = FileSystemDocumentLoader.loadDocument(targetPath, new TikaDocumentParser());
         ingestDocuments(List.of(document));
         return 1;
     }
@@ -95,7 +94,7 @@ public class DocumentService {
             return 0;
         }
 
-        Collection<Document> docs = FileSystemDocumentLoader.loadDocuments(dir);
+        Collection<Document> docs = FileSystemDocumentLoader.loadDocuments(dir, new TikaDocumentParser());
         if (!docs.isEmpty()) {
             ingestDocuments(docs);
         }
@@ -134,7 +133,7 @@ public class DocumentService {
      */
     private void ingestDocuments(Collection<Document> documents) {
         EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-                .documentSplitter(DocumentSplitters.recursive(chunkSize, chunkOverlap))
+                .documentSplitter(new RecursiveTextSplitter(chunkSize, chunkOverlap))
                 .embeddingModel(embeddingModel)
                 .embeddingStore(embeddingStore)
                 .build();

@@ -72,3 +72,8 @@ auth:
   # 认证白名单路径（不需要认证的接口）
   exclude-paths:
     - /mph/agent/auth/**
+    - /swagger-ui/**
+    - /swagger-ui.html
+    - /v3/api-docs/**
+    - /swagger-resources/**
+    - /webjars/**

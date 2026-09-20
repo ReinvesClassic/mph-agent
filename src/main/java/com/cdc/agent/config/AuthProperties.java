@@ -23,7 +23,12 @@ public class AuthProperties {
 
     /** 认证白名单路径（不需要认证的接口） */
     private String[] excludePaths = {
-            "/mph/agent/auth/**"
+            "/mph/agent/auth/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     };
 
     @Data
